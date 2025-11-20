@@ -24,13 +24,13 @@ data "aws_ssm_parameter" "google_oauth_client_secret" {
 }
 
 locals {
-  client_id                          = var.enable_google_oauth ? data.aws_ssm_parameter.google_oauth_client_id[0].value : ""
+  client_id                          = nonsensitive(var.enable_google_oauth ? data.aws_ssm_parameter.google_oauth_client_id[0].value : "")
   client_secret                      = var.enable_google_oauth ? base64encode(data.aws_ssm_parameter.google_oauth_client_secret[0].value) : ""
-  repo_k8s_resources_app_id          = jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).githubAppID
-  repo_k8s_resources_app_install_id  = jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).githubAppInstallationID
+  repo_k8s_resources_app_id          = nonsensitive(jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).githubAppID)
+  repo_k8s_resources_app_install_id  = nonsensitive(jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).githubAppInstallationID)
   repo_k8s_resources_app_private_key = base64encode(data.aws_ssm_parameter.argocd_github_app_private_key.value)
-  repo_k8s_resources_project         = jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).project
-  repo_k8s_resources_type            = jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).type
+  repo_k8s_resources_project         = nonsensitive(jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).project)
+  repo_k8s_resources_type            = nonsensitive(jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).type)
 }
 
 resource "helm_release" "secrets" {

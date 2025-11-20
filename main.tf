@@ -50,7 +50,7 @@ resource "helm_release" "secrets" {
 
   values = [<<EOF
 ---
-awsAccountId: ${var.aws_account_id}
+awsAccountId: "${var.aws_account_id}"
 awsRegion: ${var.aws_region}
 domain: ${var.domain}
 efsFileSystemId: ${var.efs_file_system_id}

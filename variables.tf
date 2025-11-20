@@ -79,6 +79,12 @@ variable "oidc_provider_arn" {
   type        = string
 }
 
+variable "values_override" {
+  description = "Heredoc Helm values file to override the chart defaults"
+  type        = string
+  default     = ""
+}
+
 variable "vpc_cidr" {
   description = "VPC CIDR where the EKS cluster is deployed"
   type        = string

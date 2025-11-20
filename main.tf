@@ -2,7 +2,13 @@ terraform {
   required_providers {
     helm       = {}
     kubernetes = {}
+    local      = {}
   }
+}
+
+resource "local_file" "argocd_values_override" {
+  content  = var.values_override
+  filename = "${path.module}/argocd-values-override.yaml"
 }
 
 data "aws_ssm_parameter" "argocd_github_app_private_key" {
@@ -165,9 +171,10 @@ resource "helm_release" "argocd" {
     }
   ]
 
-  values = [
-    "${file("${path.module}/values.yaml")}"
-  ]
+  values = concat(
+    ["${file("${path.module}/values.yaml")}"],
+    local_file.argocd_values_override.filename
+  )
 }
 
 resource "helm_release" "core_apps" {

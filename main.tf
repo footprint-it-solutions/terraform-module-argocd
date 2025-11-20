@@ -146,26 +146,6 @@ resource "helm_release" "argocd" {
 
   set = [
     {
-      name  = "controller.replicas"
-      value = "2"
-    },
-    {
-      name  = "controller.resources.limits.cpu"
-      value = "1"
-    },
-    {
-      name  = "controller.resources.limits.memory"
-      value = "4Gi"
-    },
-    {
-      name  = "controller.resources.requests.cpu"
-      value = "1"
-    },
-    {
-      name  = "controller.resources.requests.memory"
-      value = "2048Mi"
-    },
-    {
       name  = "global.domain"
       value = "argocd.${var.domain}"
     }

@@ -12,17 +12,19 @@ data "aws_ssm_parameter" "argocd_repo_k8s_resources" {
   name = "/argocd/github-app/k8s-resources"
 }
 
-data "aws_ssm_parameter" "google_sso_oauth_client_id" {
-  name = "/argocd/google-oauth/client-id"
+data "aws_ssm_parameter" "google_oauth_client_id" {
+  count = var.enable_google_oauth ? 1 : 0
+  name  = "/argocd/google-oauth/client-id"
 }
 
-data "aws_ssm_parameter" "google_sso_oauth_client_secret" {
-  name = "/argocd/google-oauth/client-secret"
+data "aws_ssm_parameter" "google_oauth_client_secret" {
+  count = var.enable_google_oauth ? 1 : 0
+  name  = "/argocd/google-oauth/client-secret"
 }
 
 locals {
-  client_id                          = data.aws_ssm_parameter.google_sso_oauth_client_id.value
-  client_secret                      = base64encode(data.aws_ssm_parameter.google_sso_oauth_client_secret.value)
+  client_id                          = var.enable_google_oauth ? data.aws_ssm_parameter.google_oauth_client_id[0].value : ""
+  client_secret                      = var.enable_google_oauth ? base64encode(data.aws_ssm_parameter.google_oauth_client_secret[0].value) : ""
   repo_k8s_resources_app_id          = jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).githubAppID
   repo_k8s_resources_app_install_id  = jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).githubAppInstallationID
   repo_k8s_resources_app_private_key = base64encode(data.aws_ssm_parameter.argocd_github_app_private_key.value)

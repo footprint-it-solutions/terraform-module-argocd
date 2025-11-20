@@ -36,6 +36,12 @@ variable "efs_file_system_id" {
   type        = string
 }
 
+variable "enable_google_oauth" {
+  description = "Whether to enable Google OAuth SSO"
+  type        = bool
+  default     = false
+}
+
 variable "environment_name" {
   description = "The name of the environment"
   type        = string

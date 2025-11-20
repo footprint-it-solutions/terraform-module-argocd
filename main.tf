@@ -113,7 +113,7 @@ resource "helm_release" "core_apps" {
   values = [
     <<EOF
 ---
-gitOpsRepo: ${var.gitops_repo}
+gitopsRepo: ${var.gitops_repo}
     EOF
   ]
 }

@@ -23,7 +23,7 @@ variable "aws_region" {
 variable "create_ecr_iam_role" {
   description = "Whether to create an IAM role that allows pulling from ECR"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "domain" {

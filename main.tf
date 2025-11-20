@@ -6,11 +6,6 @@ terraform {
   }
 }
 
-resource "local_file" "argocd_values_override" {
-  content  = var.values_override
-  filename = "${path.module}/argocd-values-override.yaml"
-}
-
 data "aws_ssm_parameter" "argocd_github_app_private_key" {
   name = "/argocd/github-app/private-key"
 }
@@ -87,11 +82,6 @@ resource "helm_release" "secrets" {
       value = var.oidc_provider
     },
     {
-      name      = "repo.k8s_resources.githubAppPrivateKey"
-      value     = local.repo_k8s_resources_app_private_key
-      sensitive = true
-    },
-    {
       name  = "repo.k8s_resources.githubAppID"
       value = local.repo_k8s_resources_app_id
     },
@@ -128,6 +118,9 @@ resource "helm_release" "secrets" {
   set_sensitive = [{
     name  = "oauth.clientSecret"
     value = local.client_secret
+    }, {
+    name  = "repo.k8s_resources.githubAppPrivateKey"
+    value = local.repo_k8s_resources_app_private_key
   }]
 }
 

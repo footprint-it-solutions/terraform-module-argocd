@@ -83,11 +83,6 @@ resource "helm_release" "secrets" {
       value = local.client_id
     },
     {
-      name      = "oauth.clientSecret"
-      value     = local.client_secret
-      sensitive = true
-    },
-    {
       name  = "oidcProvider"
       value = var.oidc_provider
     },
@@ -129,6 +124,11 @@ resource "helm_release" "secrets" {
       value = var.vpc_id
     }
   ]
+
+  set_sensitive = [{
+    name  = "oauth.clientSecret"
+    value = local.client_secret
+  }]
 }
 
 resource "helm_release" "argocd" {

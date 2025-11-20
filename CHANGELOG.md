@@ -20,11 +20,11 @@ At release time, move the entries from here to a new release section.
 
 ### Removals
 
-## [0.0.0] - YYYY-MM-DD
+## [1.0.0] - 2025-11-20
 
 ### Added
 
-- Template repository created
+- Initial revision
 
 ### Changed
 

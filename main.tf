@@ -49,6 +49,7 @@ resource "helm_release" "secrets" {
   }]
 
   values = [<<EOF
+---
 awsAccountId: ${var.aws_account_id}
 awsRegion: ${var.aws_region}
 domain: ${var.domain}
@@ -87,16 +88,14 @@ resource "helm_release" "argocd" {
     helm_release.secrets
   ]
 
-  set = [
-    {
-      name  = "global.domain"
-      value = "argocd.${var.domain}"
-    }
-  ]
-
   values = [
     "${file("${path.module}/values.yaml")}",
-    var.values_override
+    var.values_override,
+    <<EOF
+---
+global:
+  domain: argocd.${var.domain}
+    EOF
   ]
 }
 
@@ -111,10 +110,10 @@ resource "helm_release" "core_apps" {
     helm_release.argocd
   ]
 
-  set = [
-    {
-      name  = "gitopsRepo"
-      value = var.gitops_repo
-    }
+  values = [
+    <<EOF
+---
+gitOpsRepo: ${var.gitops_repo}
+    EOF
   ]
 }

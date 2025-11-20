@@ -49,27 +49,27 @@ resource "helm_release" "secrets" {
   }]
 
   values = [<<EOF
-    awsAccountId: ${var.aws_account_id}
-    awsRegion: ${var.aws_region}
-    domain: ${var.domain}
-    efsFileSystemId: ${var.efs_file_system_id}
-    environmentName: ${var.environment_name}
-    gitopsRepo: ${var.gitops_repo}
-    kmsKeyArn: ${var.kms_key_arn}
-    nodeSecurityGroupId: ${var.node_security_group_id}
-    oauth:
-      clientID: ${local.client_id}
-    oidcProvider: ${var.oidc_provider}
-    repo:
-      k8s_resources:
-        githubAppID: ${local.repo_k8s_resources_app_id}
-        githubAppInstallationID: ${local.repo_k8s_resources_app_install_id}
-        name: "repo-1945554048"
-        project: ${local.repo_k8s_resources_project}
-        type: ${local.repo_k8s_resources_type}
-        url: ${var.gitops_repo}
-    vpcCidr: ${var.vpc_cidr}
-    vpcId: ${var.vpc_id}
+awsAccountId: ${var.aws_account_id}
+awsRegion: ${var.aws_region}
+domain: ${var.domain}
+efsFileSystemId: ${var.efs_file_system_id}
+environmentName: ${var.environment_name}
+gitopsRepo: ${var.gitops_repo}
+kmsKeyArn: ${var.kms_key_arn}
+nodeSecurityGroupId: ${var.node_security_group_id}
+oauth:
+  clientID: ${local.client_id}
+oidcProvider: ${var.oidc_provider}
+repo:
+  k8s_resources:
+    githubAppID: ${local.repo_k8s_resources_app_id}
+    githubAppInstallationID: ${local.repo_k8s_resources_app_install_id}
+    name: "repo-1945554048"
+    project: ${local.repo_k8s_resources_project}
+    type: ${local.repo_k8s_resources_type}
+    url: ${var.gitops_repo}
+vpcCidr: ${var.vpc_cidr}
+vpcId: ${var.vpc_id}
   EOF
   ]
 }

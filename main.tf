@@ -171,10 +171,10 @@ resource "helm_release" "argocd" {
     }
   ]
 
-  values = concat(
-    ["${file("${path.module}/values.yaml")}"],
+  values = [
+    "${file("${path.module}/values.yaml")}",
     local_file.argocd_values_override.filename
-  )
+  ]
 }
 
 resource "helm_release" "core_apps" {

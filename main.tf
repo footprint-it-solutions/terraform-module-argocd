@@ -59,7 +59,7 @@ gitopsRepo: ${var.gitops_repo}
 kmsKeyArn: ${var.kms_key_arn}
 nodeSecurityGroupId: ${var.node_security_group_id}
 oauth:
-  clientID: ${local.client_id}
+  clientID: "${local.client_id}"
 oidcProvider: ${var.oidc_provider}
 repo:
   k8s_resources:

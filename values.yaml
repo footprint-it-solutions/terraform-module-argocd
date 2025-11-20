@@ -1,0 +1,255 @@
+---
+# This is the values file for the ArgoCD application. Use as follows:
+# helm repo add argo https://argoproj.github.io/argo-helm
+# helm repo update
+# helm upgrade --install argocd argo/argo-cd -n argocd --create-namespace --version 7.8.26 -f argocd/values.yaml
+
+applicationSet:
+  replicas: 2
+  topologySpreadConstraints:
+    - maxSkew: 1
+      minDomains: 3
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: argocd-applicationset-controller
+
+configs:
+  cm:
+    admin.enabled: true
+    application.instanceLabelKey: argocd.argoproj.io/instance
+    application.resourceTrackingMethod: annotation+label
+    exec.enabled: "true"
+    kustomize.buildOptions: --enable-helm
+    # https://docs.crossplane.io/latest/guides/crossplane-with-argo-cd/
+    resource.customizations: |
+      "*.upbound.io/*":
+        health.lua: |
+          health_status = {
+            status = "Progressing",
+            message = "Provisioning ..."
+          }
+
+          local function contains (table, val)
+            for i, v in ipairs(table) do
+              if v == val then
+                return true
+              end
+            end
+            return false
+          end
+
+          local has_no_status = {
+            "ClusterProviderConfig",
+            "ProviderConfig",
+            "ProviderConfigUsage"
+          }
+
+          if obj.status == nil or next(obj.status) == nil and contains(has_no_status, obj.kind) then
+            health_status.status = "Healthy"
+            health_status.message = "Resource is up-to-date."
+            return health_status
+          end
+
+          if obj.status == nil or next(obj.status) == nil or obj.status.conditions == nil then
+            if (obj.kind == "ProviderConfig" or obj.kind == "ClusterProviderConfig") and obj.status.users ~= nil then
+              health_status.status = "Healthy"
+              health_status.message = "Resource is in use."
+              return health_status
+            end
+            return health_status
+          end
+
+          for i, condition in ipairs(obj.status.conditions) do
+            if condition.type == "LastAsyncOperation" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+
+            if condition.type == "Synced" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+
+            if condition.type == "Ready" then
+              if condition.status == "True" then
+                health_status.status = "Healthy"
+                health_status.message = "Resource is up-to-date."
+                return health_status
+              end
+            end
+          end
+
+          return health_status
+
+      "*.crossplane.io/*":
+        health.lua: |
+          health_status = {
+            status = "Progressing",
+            message = "Provisioning ..."
+          }
+
+          local function contains (table, val)
+            for i, v in ipairs(table) do
+              if v == val then
+                return true
+              end
+            end
+            return false
+          end
+
+          local has_no_status = {
+            "Composition",
+            "CompositionRevision",
+            "DeploymentRuntimeConfig",
+            "ClusterProviderConfig",
+            "ProviderConfig",
+            "ProviderConfigUsage"
+          }
+          if obj.status == nil or next(obj.status) == nil and contains(has_no_status, obj.kind) then
+              health_status.status = "Healthy"
+              health_status.message = "Resource is up-to-date."
+            return health_status
+          end
+
+          if obj.status == nil or next(obj.status) == nil or obj.status.conditions == nil then
+            if (obj.kind == "ProviderConfig" or obj.kind == "ClusterProviderConfig") and obj.status.users ~= nil then
+              health_status.status = "Healthy"
+              health_status.message = "Resource is in use."
+              return health_status
+            end
+            return health_status
+          end
+
+          for i, condition in ipairs(obj.status.conditions) do
+            if condition.type == "LastAsyncOperation" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+
+            if condition.type == "Synced" then
+              if condition.status == "False" then
+                health_status.status = "Degraded"
+                health_status.message = condition.message
+                return health_status
+              end
+            end
+
+            if contains({"Ready", "Healthy", "Offered", "Established", "ValidPipeline", "RevisionHealthy"}, condition.type) then
+              if condition.status == "True" then
+                health_status.status = "Healthy"
+                health_status.message = "Resource is up-to-date."
+                return health_status
+              end
+            end
+          end
+
+          return health_status
+    resource.customizations.ignoreDifferences.all: |
+      jsonPointers:
+        - /spec/replicas
+        - /spec/revisionHistoryLimit
+
+    #  This instructs ArgoCD to exclude resources in the velero.io API group with kinds Backup and Restore from being managed by ArgoCD, for all clusters.
+    resource.exclusions: |
+      - apiGroups:
+        - velero.io
+        kinds:
+        - Backup
+        - Restore
+        clusters:
+        - "*"
+      - apiGroups:
+        - "*"
+        kinds:
+        - ManagedResourceDefinition
+      - apiGroups:
+        - "*"
+        kinds:
+        - ProviderConfigUsage
+  rbac:
+    # https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/
+    # TODO: Add more roles, tighten up permissions
+    # p, role:power_user, applications, *, */*, allow
+    # p, role:power_user, applicationssets, *, */*, allow
+    # p, role:power_user, clusters, get, *, allow
+    # p, role:power_user, exec, create, */*, allow
+    # p, role:power_user, extensions, invoke, */*, allow
+    # p, role:power_user, logs, get, *, allow
+    # p, role:power_user, projects, get, *, allow
+    # p, role:power_user, repositories, *, allow
+    policy.csv: |
+      g, engineering, role:admin
+    scopes: '[groups, email]'
+  params:
+    application.namespaces: "*"
+    application.resourceTrackingMethod: "annotation"
+
+controller:
+  env:
+    - name: ARGOCD_K8S_CLIENT_QPS
+      value: "500"
+  replicas: 2
+  resources:
+    limits:
+      cpu: "1"
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 2Gi
+  topologySpreadConstraints:
+    - maxSkew: 1
+      minDomains: 3
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: argocd-application-controller
+
+dex:
+  enabled: false
+
+global:
+  affinity:
+    podAntiAffinity: soft
+
+redis-ha:
+  enabled: true
+  exporter:
+    enabled: true
+
+server:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  topologySpreadConstraints:
+    - maxSkew: 1
+      minDomains: 3
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: argocd-server
+
+repoServer:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  topologySpreadConstraints:
+    - maxSkew: 1
+      minDomains: 3
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: argocd-repo-server

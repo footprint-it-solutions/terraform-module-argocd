@@ -40,81 +40,6 @@ resource "helm_release" "secrets" {
   namespace        = var.argocd_namespace
   create_namespace = true
 
-  set = [
-    {
-      name  = "awsAccountId"
-      value = var.aws_account_id
-    },
-    {
-      name  = "awsRegion"
-      value = var.aws_region
-    },
-    {
-      name  = "domain"
-      value = var.domain
-    },
-    {
-      name  = "efsFileSystemId"
-      value = var.efs_file_system_id
-    },
-    {
-      name  = "environmentName"
-      value = var.environment_name
-    },
-    {
-      name  = "gitopsRepo"
-      value = var.gitops_repo
-    },
-    {
-      name  = "kmsKeyArn"
-      value = var.kms_key_arn
-    },
-    {
-      name  = "nodeSecurityGroupId"
-      value = var.node_security_group_id
-    },
-    {
-      name  = "oauth.clientID"
-      value = local.client_id
-    },
-    {
-      name  = "oidcProvider"
-      value = var.oidc_provider
-    },
-    {
-      name  = "repo.k8s_resources.githubAppID"
-      value = local.repo_k8s_resources_app_id
-    },
-    {
-      name  = "repo.k8s_resources.githubAppInstallationID"
-      value = local.repo_k8s_resources_app_install_id
-    },
-    {
-      name  = "repo.k8s_resources.name"
-      value = "repo-1945554048"
-    },
-    {
-      name  = "repo.k8s_resources.project"
-      value = local.repo_k8s_resources_project
-    },
-    {
-      name  = "repo.k8s_resources.type"
-      value = local.repo_k8s_resources_type
-    },
-    {
-      name  = "repo.k8s_resources.url"
-      value = var.gitops_repo
-    },
-    {
-      name  = "vpcCidr"
-      value = var.vpc_cidr
-    },
-    {
-      name  = "vpcId"
-      value = var.vpc_id
-    }
-  ]
-
   set_sensitive = [{
     name  = "oauth.clientSecret"
     value = local.client_secret
@@ -122,6 +47,31 @@ resource "helm_release" "secrets" {
     name  = "repo.k8s_resources.githubAppPrivateKey"
     value = local.repo_k8s_resources_app_private_key
   }]
+
+  values = [<<EOF
+    awsAccountId: ${var.aws_account_id}
+    awsRegion: ${var.aws_region}
+    domain: ${var.domain}
+    efsFileSystemId: ${var.efs_file_system_id}
+    environmentName: ${var.environment_name}
+    gitopsRepo: ${var.gitops_repo}
+    kmsKeyArn: ${var.kms_key_arn}
+    nodeSecurityGroupId: ${var.node_security_group_id}
+    oauth:
+      clientID: ${local.client_id}
+    oidcProvider: ${var.oidc_provider}
+    repo:
+      k8s_resources:
+        githubAppID: ${local.repo_k8s_resources_app_id}
+        githubAppInstallationID: ${local.repo_k8s_resources_app_install_id}
+        name: "repo-1945554048"
+        project: ${local.repo_k8s_resources_project}
+        type: ${local.repo_k8s_resources_type}
+        url: ${var.gitops_repo}
+    vpcCidr: ${var.vpc_cidr}
+    vpcId: ${var.vpc_id}
+  EOF
+  ]
 }
 
 resource "helm_release" "argocd" {

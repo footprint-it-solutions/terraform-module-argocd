@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: core-apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  destination:
+    name: ''
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  source:
+    path: 'argocd/applications'
+    repoURL: {{ .Values.gitopsRepo }}
+    targetRevision: 'main'
+    directory:
+      recurse: false
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - PruneLast=true

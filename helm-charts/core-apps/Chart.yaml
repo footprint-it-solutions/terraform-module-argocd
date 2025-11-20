@@ -1,0 +1,7 @@
+---
+apiVersion: v2
+name: core-apps
+description: A Helm chart for deploying core applications
+type: application
+version: 0.1.0
+appVersion: "1.0.1"

@@ -173,7 +173,7 @@ resource "helm_release" "argocd" {
 
   values = [
     "${file("${path.module}/values.yaml")}",
-    "${file(local_file.argocd_values_override.filename)}"
+    local_file.argocd_values_override.content
   ]
 }
 

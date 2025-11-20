@@ -63,9 +63,9 @@ oauth:
 oidcProvider: ${var.oidc_provider}
 repo:
   k8s_resources:
-    githubAppID: ${local.repo_k8s_resources_app_id}
-    githubAppInstallationID: ${local.repo_k8s_resources_app_install_id}
-    name: "repo-1945554048"
+    githubAppID: "${local.repo_k8s_resources_app_id}"
+    githubAppInstallationID: "${local.repo_k8s_resources_app_install_id}"
+    name: repo-1945554048
     project: ${local.repo_k8s_resources_project}
     type: ${local.repo_k8s_resources_type}
     url: ${var.gitops_repo}

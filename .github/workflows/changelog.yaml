@@ -1,0 +1,35 @@
+---
+name: Check Changelog Update
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+jobs:
+  verify_changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history to enable proper comparison between base and head
+          fetch-depth: 0
+
+      # The git diff command compares the head branch (HEAD) against the base branch (origin/${{ github.base_ref }})
+      # --name-only lists only the file names that changed
+      # grep checks if CHANGELOG.md is in that list
+      # If CHANGELOG.md is found, grep exits with 0 (success).
+      # If CHANGELOG.md is NOT found, grep exits with 1 (failure), causing this step to fail.
+      - name: Check for CHANGELOG.md Change
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }} HEAD | grep -q 'CHANGELOG.md'; then
+              echo "🎉 CHANGELOG.md was updated. Check passed."
+          else
+              echo "::error::⚠️ All PRs require an update to CHANGELOG.md."
+              exit 1
+          fi

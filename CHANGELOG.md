@@ -20,6 +20,12 @@ At release time, move the entries from here to a new release section.
 
 ### Removals
 
+## [1.1.0] - 2026-01-08
+
+### Added
+
+- Added `priorityClassName: system-cluster-critical`
+
 ## [1.0.0] - 2025-11-20
 
 ### Added

@@ -222,6 +222,7 @@ dex:
 global:
   affinity:
     podAntiAffinity: soft
+  priorityClassName: system-cluster-critical
 
 redis-ha:
   enabled: true

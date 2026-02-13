@@ -79,6 +79,12 @@ variable "oidc_provider_arn" {
   type        = string
 }
 
+variable "target_revision" {
+  description = "The target revision (branch, tag, or commit SHA) for the ArgoCD application"
+  type        = string
+  default     = "main"
+}
+
 variable "values_override" {
   description = "Heredoc Helm values file to override the chart defaults"
   type        = string

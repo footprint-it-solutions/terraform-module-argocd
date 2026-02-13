@@ -79,7 +79,7 @@ variable "oidc_provider_arn" {
   type        = string
 }
 
-variable "target_revision" {
+variable "gitops_ref" {
   description = "The target revision (branch, tag, or commit SHA) for the ArgoCD application"
   type        = string
   default     = "main"

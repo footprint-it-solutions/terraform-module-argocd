@@ -14,7 +14,7 @@ At release time, move the entries from here to a new release section.
 
 ### Additions
 
-- Parameterised the `targetRevision` for the ArgoCD application using a Terraform variable.
+- Parameterised the `gitopsRef` for the ArgoCD application using a Terraform variable.
 
 ### Fixes
 

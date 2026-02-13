@@ -20,6 +20,12 @@ At release time, move the entries from here to a new release section.
 
 ### Removals
 
+## [1.2.0] - 2026-02-13
+
+### Added
+
+- Parameterised the `gitopsRef` for the ArgoCD application using a Terraform variable.
+
 ## [1.1.0] - 2026-01-08
 
 ### Added

@@ -69,6 +69,7 @@ repo:
     project: ${local.repo_k8s_resources_project}
     type: ${local.repo_k8s_resources_type}
     url: ${var.gitops_repo}
+gitopsRef: ${var.gitops_ref}
 vpcCidr: ${var.vpc_cidr}
 vpcId: ${var.vpc_id}
   EOF
@@ -114,6 +115,7 @@ resource "helm_release" "core_apps" {
     <<EOF
 ---
 gitopsRepo: ${var.gitops_repo}
+gitopsRef: ${var.gitops_ref}
     EOF
   ]
 }

@@ -13,8 +13,8 @@ spec:
     server: https://kubernetes.default.svc
   source:
     path: 'argocd/applications'
-    repoURL: {{ .Values.gitopsRepo }}
-    targetRevision: 'main'
+    repoURL: {{ .Values.gitopsRepo | quote }}
+    targetRevision: {{ .Values.gitopsRef | quote }}
     directory:
       recurse: false
   sources: []

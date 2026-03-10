@@ -14,6 +14,8 @@ At release time, move the entries from here to a new release section.
 
 ### Additions
 
+- Added `additional_resource_customisations` variable to allow merging extra resource customisations with the defaults.
+
 ### Fixes
 
 ### Changes

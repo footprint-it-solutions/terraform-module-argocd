@@ -20,6 +20,12 @@ At release time, move the entries from here to a new release section.
 
 ### Removals
 
+## [1.3.0] - 2026-03-31
+
+### Added
+
+- Added Pod Disruption Budgets (PDBs) for ArgoCD components: `applicationSet`, `controller`, `redis`, `server`, and `repoServer`.
+
 ## [1.2.0] - 2026-02-13
 
 ### Added

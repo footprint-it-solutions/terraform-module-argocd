@@ -198,6 +198,7 @@ configs:
     application.namespaces: "*"
     application.resourceTrackingMethod: "annotation"
 
+# This is the Application Controller component of ArgoCD, which is responsible for reconciling the state of applications.
 controller:
   env:
     - name: ARGOCD_K8S_CLIENT_QPS
@@ -240,22 +241,6 @@ redis-ha:
   podDisruptionBudget:
     minAvailable: 2
 
-server:
-  autoscaling:
-    enabled: true
-    minReplicas: 2
-  pdb:
-    enabled: true
-    minAvailable: 1
-  topologySpreadConstraints:
-    - maxSkew: 1
-      minDomains: 3
-      topologyKey: "kubernetes.io/hostname"
-      whenUnsatisfiable: DoNotSchedule
-      labelSelector:
-        matchLabels:
-          app.kubernetes.io/name: argocd-server
-
 repoServer:
   autoscaling:
     enabled: true
@@ -271,3 +256,19 @@ repoServer:
       labelSelector:
         matchLabels:
           app.kubernetes.io/name: argocd-repo-server
+
+server:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  pdb:
+    enabled: true
+    minAvailable: 1
+  topologySpreadConstraints:
+    - maxSkew: 1
+      minDomains: 3
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: argocd-server

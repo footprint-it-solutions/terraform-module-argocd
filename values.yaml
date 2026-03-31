@@ -240,7 +240,6 @@ redis-ha:
   podDisruptionBudget:
     minAvailable: 2
 
-
 server:
   autoscaling:
     enabled: true

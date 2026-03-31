@@ -233,7 +233,7 @@ global:
 redis:
   pdb:
     enabled: true
-    minAvailable: 1
+    minAvailable: 2
 
 redis-ha:
   enabled: true

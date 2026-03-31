@@ -230,15 +230,16 @@ global:
     podAntiAffinity: soft
   priorityClassName: system-cluster-critical
 
-redis:
-  pdb:
-    enabled: true
-    minAvailable: 2
-
 redis-ha:
   enabled: true
   exporter:
     enabled: true
+  haproxy:
+    podDisruptionBudget:
+      minAvailable: 1
+  podDisruptionBudget:
+    minAvailable: 2
+
 
 server:
   autoscaling:

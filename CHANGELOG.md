@@ -24,7 +24,9 @@ At release time, move the entries from here to a new release section.
 
 ### Added
 
-- Added Pod Disruption Budgets (PDBs) for ArgoCD components: `applicationSet`, `controller`, `redis`, `server`, and `repoServer`.
+- Added Pod Disruption Budgets (PDBs) for core ArgoCD components: `applicationSet`, `controller`, `server`, and `repoServer`.
+- Configured HA-aware Pod Disruption Budgets for the `redis-ha` subchart (Sentinels/Redis nodes) and its HAProxy load balancer to ensure quorum is maintained during maintenance.
+- Added documentation comment for the Application Controller component in `values.yaml`.
 
 ## [1.2.0] - 2026-02-13
 

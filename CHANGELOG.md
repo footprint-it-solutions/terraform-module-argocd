@@ -14,9 +14,16 @@ At release time, move the entries from here to a new release section.
 
 ### Additions
 
+- Exposed resource request/limit parameters for the core ArgoCD Application Controller, ApplicationSet Controller, Repo Server, and API/UI Server.
+- Exposed replica configuration and autoscaling limits (min/max replicas) for the core ArgoCD components.
+- Added variable to configure the Kubernetes API client QPS for the Application Controller to manage rate limiting.
+- Added boolean variable `argocd_redis_ha_enabled` to optionally disable high-availability Redis to optimise resource usage in small-scale environments.
+
 ### Fixes
 
 ### Changes
+
+- Migrated the static ArgoCD Helm release values file (`values.yaml`) to use dynamic Terraform `templatefile()` rendering to support performance and resource parameterisation.
 
 ### Removals
 

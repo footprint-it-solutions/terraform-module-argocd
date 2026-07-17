@@ -31,6 +31,11 @@ locals {
   repo_k8s_resources_app_private_key = base64encode(data.aws_ssm_parameter.argocd_github_app_private_key.value)
   repo_k8s_resources_project         = nonsensitive(jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).project)
   repo_k8s_resources_type            = nonsensitive(jsondecode(data.aws_ssm_parameter.argocd_repo_k8s_resources.value).type)
+
+  default_values                 = yamldecode(file("${path.module}/values.yaml"))
+  default_customisations         = local.default_values.configs.cm["resource.customizations"]
+  has_additional_customisations  = var.additional_resource_customisations != null && var.additional_resource_customisations != ""
+  merged_customisations          = local.has_additional_customisations ? join("\n", [local.default_customisations, var.additional_resource_customisations]) : local.default_customisations
 }
 
 resource "helm_release" "secrets" {
@@ -91,6 +96,13 @@ resource "helm_release" "argocd" {
 
   values = [
     "${file("${path.module}/values.yaml")}",
+    local.has_additional_customisations ? <<EOF
+configs:
+  cm:
+    resource.customizations: |
+      ${indent(6, local.merged_customisations)}
+EOF
+    : "",
     var.values_override,
     <<EOF
 ---

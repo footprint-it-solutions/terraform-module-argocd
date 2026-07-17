@@ -1,3 +1,9 @@
+variable "additional_resource_customisations" {
+  description = "Additional ArgoCD resource customisations to merge with the default ones"
+  type        = string
+  default     = null
+}
+
 variable "argocd_namespace" {
   description = "Namespace to install ArgoCD"
   type        = string

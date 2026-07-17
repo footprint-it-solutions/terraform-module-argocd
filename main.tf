@@ -90,7 +90,34 @@ resource "helm_release" "argocd" {
   ]
 
   values = [
-    "${file("${path.module}/values.yaml")}",
+    templatefile("${path.module}/values.yaml", {
+      application_controller_qps       = var.argocd_application_controller_qps
+      application_controller_replicas  = var.argocd_application_controller_replicas
+      application_controller_cpu_lim   = var.argocd_application_controller_resources.limits.cpu
+      application_controller_mem_lim   = var.argocd_application_controller_resources.limits.memory
+      application_controller_cpu_req   = var.argocd_application_controller_resources.requests.cpu
+      application_controller_mem_req   = var.argocd_application_controller_resources.requests.memory
+      applicationset_replicas          = var.argocd_applicationset_replicas
+      applicationset_cpu_lim           = var.argocd_applicationset_resources.limits.cpu
+      applicationset_mem_lim           = var.argocd_applicationset_resources.limits.memory
+      applicationset_cpu_req           = var.argocd_applicationset_resources.requests.cpu
+      applicationset_mem_req           = var.argocd_applicationset_resources.requests.memory
+      redis_ha_enabled                 = var.argocd_redis_ha_enabled
+      repo_server_autoscaling_enabled  = var.argocd_repo_server_autoscaling_enabled
+      repo_server_max_replicas         = var.argocd_repo_server_max_replicas
+      repo_server_min_replicas         = var.argocd_repo_server_min_replicas
+      repo_server_cpu_lim              = var.argocd_repo_server_resources.limits.cpu
+      repo_server_mem_lim              = var.argocd_repo_server_resources.limits.memory
+      repo_server_cpu_req              = var.argocd_repo_server_resources.requests.cpu
+      repo_server_mem_req              = var.argocd_repo_server_resources.requests.memory
+      server_autoscaling_enabled       = var.argocd_server_autoscaling_enabled
+      server_max_replicas              = var.argocd_server_max_replicas
+      server_min_replicas              = var.argocd_server_min_replicas
+      server_cpu_lim                   = var.argocd_server_resources.limits.cpu
+      server_mem_lim                   = var.argocd_server_resources.limits.memory
+      server_cpu_req                   = var.argocd_server_resources.requests.cpu
+      server_mem_req                   = var.argocd_server_resources.requests.memory
+    }),
     var.values_override,
     <<EOF
 ---

@@ -1,6 +1,162 @@
+variable "argocd_application_controller_qps" {
+  description = "The rate limit (queries per second) for the ArgoCD Application Controller K8s client to prevent API rate limiting"
+  type        = string
+  default     = "500"
+}
+
+variable "argocd_application_controller_replicas" {
+  description = "The number of replicas for the ArgoCD Application Controller"
+  type        = number
+  default     = 2
+}
+
+variable "argocd_application_controller_resources" {
+  description = "Resource allocations (CPU and memory requests/limits) for the ArgoCD Application Controller"
+  type = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    limits = {
+      cpu    = "1"
+      memory = "4Gi"
+    }
+    requests = {
+      cpu    = "500m"
+      memory = "2Gi"
+    }
+  }
+}
+
+variable "argocd_applicationset_replicas" {
+  description = "The number of replicas for the ArgoCD ApplicationSet controller"
+  type        = number
+  default     = 2
+}
+
+variable "argocd_applicationset_resources" {
+  description = "Resource allocations (CPU and memory requests/limits) for the ArgoCD ApplicationSet controller"
+  type = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    limits = {
+      cpu    = "1"
+      memory = "1Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "512Mi"
+    }
+  }
+}
+
 variable "argocd_namespace" {
   description = "Namespace to install ArgoCD"
   type        = string
+}
+
+variable "argocd_redis_ha_enabled" {
+  description = "Whether to enable High Availability (HA) for Redis, which spawns a multi-node Redis cluster with Sentinel"
+  type        = bool
+  default     = true
+}
+
+variable "argocd_repo_server_autoscaling_enabled" {
+  description = "Whether to enable autoscaling for the ArgoCD repo server"
+  type        = bool
+  default     = true
+}
+
+variable "argocd_repo_server_max_replicas" {
+  description = "The maximum number of replicas for the ArgoCD repo server autoscaler"
+  type        = number
+  default     = 4
+}
+
+variable "argocd_repo_server_min_replicas" {
+  description = "The minimum number of replicas for the ArgoCD repo server autoscaler"
+  type        = number
+  default     = 2
+}
+
+variable "argocd_repo_server_resources" {
+  description = "Resource allocations (CPU and memory requests/limits) for the ArgoCD repo server"
+  type = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    limits = {
+      cpu    = "1"
+      memory = "1Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "512Mi"
+    }
+  }
+}
+
+variable "argocd_server_autoscaling_enabled" {
+  description = "Whether to enable autoscaling for the ArgoCD API/UI server"
+  type        = bool
+  default     = true
+}
+
+variable "argocd_server_max_replicas" {
+  description = "The maximum number of replicas for the ArgoCD API/UI server autoscaler"
+  type        = number
+  default     = 4
+}
+
+variable "argocd_server_min_replicas" {
+  description = "The minimum number of replicas for the ArgoCD API/UI server autoscaler"
+  type        = number
+  default     = 2
+}
+
+variable "argocd_server_resources" {
+  description = "Resource allocations (CPU and memory requests/limits) for the ArgoCD API/UI server"
+  type = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+  })
+  default = {
+    limits = {
+      cpu    = "1"
+      memory = "1Gi"
+    }
+    requests = {
+      cpu    = "250m"
+      memory = "512Mi"
+    }
+  }
 }
 
 variable "argocd_version" {
